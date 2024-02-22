@@ -139,3 +139,89 @@ console.log(hm.values());
 console.log(hm.entries());
 console.log(hm.length());
 
+//Hash set. Keys with no values
+
+class HashSet {
+    constructor() {
+        this.bucketSize = 16;
+        this.buckets = new Array(this.bucketSize).fill(null).map(() => []);
+    }
+
+    hash(key) {
+        let hashCode = 0;
+
+        const primeNumber = 31;
+        for (let i = 0; i < key.length; i++) {
+            hashCode = primeNumber * hashCode + key.charCodeAt(i);
+        }
+
+        return hashCode % this.bucketSize;
+    }
+
+    add(key) {
+        const index = this.hash(key);
+        const bucket = this.buckets[index];
+
+        for (const existingKey of bucket) {
+            if (existingKey === key) {
+                return;
+            }
+        }
+
+        bucket.push(key);
+    }
+
+    isIn(key) {
+        const index = this.hash(key);
+        const bucket = this.buckets[index];
+
+        for (const existingKey of bucket) {
+            if (existingKey === key) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    remove(key) {
+        const index = this.hash(key);
+        const bucket = this.buckets[index];
+
+        this.buckets[index] = bucket.filter((existingKey) => existingKey !== key);
+    }
+
+    keys() {
+        const result = [];
+
+        for (const bucket of this.buckets) {
+            result.push(...bucket);
+        }
+
+        return result;
+    }
+
+    length(){
+        let count = 0;
+
+        for (const bucket of this.buckets) {
+                count += bucket.length;   
+        }
+        return count;
+    }
+}
+
+const hs = new HashSet();
+
+hs.add('Charmander');
+hs.add('Squirtle');
+hs.add('Bulbasour');
+
+console.log(hs.isIn('Charmander'));
+console.log(hs.isIn('orange'));
+
+hs.remove('Squirtle');
+console.log(hs.keys());
+console.log(hs.length());
+
+
